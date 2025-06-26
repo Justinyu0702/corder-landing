@@ -168,6 +168,7 @@ body.compensate-for-scrollbar {
 
 .fancybox-slide--image {
     overflow: hidden;
+
     padding: 120px 0;
 }
 
@@ -287,6 +288,7 @@ body.compensate-for-scrollbar {
     height: 100%;
     margin: 0;
     overflow: hidden;
+
     padding: 0;
     width: 100%
 }
@@ -833,6 +835,7 @@ body.compensate-for-scrollbar {
     max-width: calc(50% - 4px);
     outline: none;
     overflow: hidden;
+
     padding: 0;
     position: relative;
     -webkit-tap-highlight-color: transparent;

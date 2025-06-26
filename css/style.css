@@ -51,6 +51,17 @@ p.s. I am available for Freelance hire (UI design, web development). email: mill
 --------------------------------------------*/
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css);
+
+/* quickfix for safari not scrollable */
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+
 /* -------------------------------------------
 
 main
@@ -96,9 +107,18 @@ body {
 
 .mil-wrapper {
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
+
   max-width: 100%;
 }
+/* .mil-wrapper {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch; 
+} */
+
 
 .container {
   pointer-events: all;
@@ -110,6 +130,7 @@ body {
 
 .mil-o-hidden {
   overflow: hidden;
+
 }
 
 .mil-flex {
@@ -141,6 +162,7 @@ body {
 section {
   position: relative;
   overflow: hidden;
+
 }
 
 /* -------------------------------------------
@@ -477,6 +499,7 @@ a {
 .mil-img-frame {
   position: relative;
   overflow: hidden;
+
   width: 100%;
   padding-bottom: 140%;
 }
@@ -1593,6 +1616,7 @@ menu
 .mil-main-menu ul li.mil-has-children ul {
   padding-left: 25px;
   overflow: hidden;
+
   max-height: 0;
   -webkit-transition: 0.6s cubic-bezier(0, 0, 0.3642, 1);
   transition: 0.6s cubic-bezier(0, 0, 0.3642, 1);
@@ -2318,6 +2342,7 @@ services
   width: 250px;
   display: inline-block;
   overflow: hidden;
+
   border-radius: 70px;
   margin-right: 30px;
 }
@@ -2351,6 +2376,7 @@ services
   -webkit-transform: translateY(10px);
           transform: translateY(10px);
   overflow: hidden;
+
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -2458,6 +2484,7 @@ services
 }
 .mil-service-card-lg.mil-other-card {
   overflow: hidden;
+
   position: relative;
   border: solid 1px rgb(229, 229, 229);
   padding: 60px;
@@ -2512,6 +2539,7 @@ team
 .mil-team-card {
   position: relative;
   overflow: hidden;
+
   padding-bottom: 130%;
 }
 .mil-team-card:after {
@@ -2828,6 +2856,7 @@ blog
 .mil-blog-card .mil-cover-frame {
   position: relative;
   overflow: hidden;
+
   padding-bottom: 65%;
   margin-bottom: 30px;
 }
@@ -2853,6 +2882,7 @@ blog
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
 }
 .mil-blog-card:hover .mil-cover-frame img {
   -webkit-transform: scale(1.05);
@@ -3138,6 +3168,7 @@ portfolio
 .mil-portfolio-item .mil-cover-frame {
   position: relative;
   overflow: hidden;
+
   margin-bottom: 30px;
 }
 .mil-portfolio-item .mil-cover-frame .mil-cover {
@@ -3181,6 +3212,7 @@ portfolio
 }
 .mil-portfolio-item.mil-slider-item .mil-descr {
   overflow: hidden;
+
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -3376,6 +3408,7 @@ map
   height: 600px;
   position: relative;
   overflow: hidden;
+
 }
 .mil-map-frame .mil-map {
   position: absolute;
@@ -3448,6 +3481,7 @@ accordion
 .mil-accordion-content {
   height: 0;
   overflow: hidden;
+
 }
 
 /***************************
@@ -4081,6 +4115,7 @@ images
 .mil-image-frame {
   position: relative;
   overflow: hidden;
+
 }
 .mil-image-frame > img {
   position: absolute;
