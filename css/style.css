@@ -107,7 +107,7 @@ body {
 
 .mil-wrapper {
   position: relative;
-  /* overflow: hidden; */
+  overflow: hidden;
 
   max-width: 100%;
 }
