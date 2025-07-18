@@ -63,83 +63,107 @@
       }
       /* Modal styles */
       .mil-modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.45);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        transition: opacity 0.2s;
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+        background: rgba(0,0,0,0.45) !important;
+        z-index: 9999 !important;
+        justify-content: center !important;
+        align-items: center !important;
+        transition: opacity 0.2s !important;
       }
       .mil-modal-overlay.active {
-        display: flex;
-        opacity: 1;
+        display: flex !important;
+        opacity: 1 !important;
       }
       .mil-modal {
-        background: #fff;
-        border-radius: 16px;
-        max-width: 370px;
-        width: 92%;
-        padding: 28px 20px 20px 20px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        position: relative;
-        text-align: center;
-        animation: milModalIn 0.22s cubic-bezier(.4,1.4,.6,1) both;
+        background: #fff !important;
+        border-radius: 16px !important;
+        max-width: 370px !important;
+        width: 92% !important;
+        padding: 28px 20px 20px 20px !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
+        position: relative !important;
+        text-align: center !important;
+        animation: milModalIn 0.22s cubic-bezier(.4,1.4,.6,1) both !important;
+      }
+      .mil-modal h3 {
+        font-size: 1.5em !important;
+        margin-bottom: 20px !important;
+        color: #292929 !important;
+        font-weight: 600 !important;
+      }
+      .mil-btn-row {
+        display: flex !important;
+        gap: 12px !important;
+        justify-content: center !important;
+        margin-bottom: 16px !important;
+      }
+      .mil-btn-row button {
+        flex: 1 !important;
+        max-width: 140px !important;
+      }
+      .mil-progress {
+        font-size: 0.9em !important;
+        color: #666 !important;
+        margin-bottom: 12px !important;
+      }
+      .mil-save-line {
+        font-size: 0.85em !important;
+        color: #888 !important;
+        line-height: 1.4 !important;
+      }
+      .mil-modal-close {
+        position: absolute !important;
+        top: 12px !important;
+        right: 16px !important;
+        background: none !important;
+        border: none !important;
+        font-size: 24px !important;
+        color: #999 !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        width: 30px !important;
+        height: 30px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .mil-modal-close:hover {
+        color: #292929 !important;
       }
       @keyframes milModalIn {
         from { transform: translateY(40px) scale(0.97); opacity: 0; }
         to { transform: none; opacity: 1; }
       }
-      .mil-modal-close {
-        position: absolute;
-        top: 10px;
-        right: 16px;
-        font-size: 1.5em;
-        color: #aaa;
-        background: none;
-        border: none;
-        cursor: pointer;
-        transition: color 0.18s;
+      /* Additional modal button styles */
+      .mil-modal .mil-button {
+        background: #292929 !important;
+        color: #fff !important;
+        border: 1px solid #292929 !important;
+        transition: all 0.2s !important;
       }
-      .mil-modal-close:hover {
-        color: #e5cb67;
+      .mil-modal .mil-button:hover {
+        background: #e5cb67 !important;
+        color: #292929 !important;
+        border-color: #e5cb67 !important;
       }
-      .mil-modal .mil-btn-row {
-        display: flex;
-        gap: 10px;
-        margin: 22px 0 10px 0;
-        justify-content: center;
+      .mil-modal .mil-button.mil-accent-bg {
+        background: #e5cb67 !important;
+        color: #292929 !important;
+        border-color: #e5cb67 !important;
       }
-      .mil-modal .mil-btn-row button {
-        flex: 1;
-        min-width: 0;
-        font-size: 1em;
-        padding: 10px 0;
-        border-radius: 18px;
+      .mil-modal .mil-button.mil-accent-bg:hover {
+        background: #d4b856 !important;
+        border-color: #d4b856 !important;
       }
-      .mil-modal .mil-btn-row button.mil-accent-bg {
-        background: #e5cb67;
-        color: #292929;
-        border: 1px solid #e5cb67;
+      /* Ensure modal is above everything */
+      .mil-modal-overlay {
+        z-index: 99999 !important;
       }
-      .mil-modal .mil-btn-row button.mil-accent-bg:hover {
-        background: #fffbe6;
-      }
-      .mil-modal .mil-progress {
-        font-size: 1em;
-        margin-bottom: 10px;
-        color: #666;
-      }
-      .mil-modal h3 {
-        font-size: 1.25em;
-        margin-bottom: 0.5em;
-        font-weight: 600;
-      }
-      .mil-modal .mil-save-line {
-        font-size: 0.97em;
-        color: #888;
-        margin-bottom: 8px;
+      /* Prevent body scroll when modal is open */
+      body.modal-open {
+        overflow: hidden !important;
       }
     </style>
 
@@ -639,7 +663,7 @@
                               <button id="milJoinGroup" class="mil-button mil-arrow-place mil-accent-bg"><span>Join Group</span></button>
                             </div>
                             <div class="mil-progress" id="milModalProgress">Current progress: 0 / 0</div>
-                            <div class="mil-save-line">Save $<span id="milModalSave">0</span> if 5+ join. You’ll get refund/credit after fill.</div>
+                            <div class="mil-save-line">Save $<span id="milModalSave">0</span> if 5+ join. You'll get refund/credit after group fills.</div>
                           </div>
                         </div>
                     </div>
