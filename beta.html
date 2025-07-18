@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- bootstrap grid css -->
+    <link rel="stylesheet" href="css/plugins/bootstrap-grid.css">
+    <!-- font awesome css -->
+    <link rel="stylesheet" href="css/plugins/font-awesome.min.css">
+    <!-- swiper css -->
+    <link rel="stylesheet" href="css/plugins/swiper.min.css">
+    <!-- fancybox css -->
+    <link rel="stylesheet" href="css/plugins/fancybox.min.css">
+    <!-- corder scss -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDKs -->
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <!-- Firebase Functions -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-functions-compat.js"></script>
+    <!-- page name -->
+    <title>Beta Testing | Corder</title>
+    <style>
+      .mil-product-card {
+        position: relative;
+      }
+      /* Show order button on product card hover */
+      .mil-order-btn {
+        display: none;
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        z-index: 3;
+        padding: 6px 18px;
+        font-size: 0.95em;
+        border-radius: 22px;
+        background: #fff;
+        color: #292929;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #e5cb67;
+        transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+        min-width: 90px;
+        font-weight: 500;
+      }
+      .mil-order-btn:hover {
+        background: #e5cb67;
+        color: #292929;
+        box-shadow: 0 4px 16px rgba(229,203,103,0.13);
+        border-color: #e5cb67;
+      }
+      .mil-product-card:hover .mil-order-btn {
+        display: block;
+      }
+      .mil-product-preview {
+        margin-bottom: 18px;
+      }
+      /* Modal styles */
+      .mil-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.2s;
+      }
+      .mil-modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+      .mil-modal {
+        background: #fff;
+        border-radius: 16px;
+        max-width: 370px;
+        width: 92%;
+        padding: 28px 20px 20px 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        position: relative;
+        text-align: center;
+        animation: milModalIn 0.22s cubic-bezier(.4,1.4,.6,1) both;
+      }
+      @keyframes milModalIn {
+        from { transform: translateY(40px) scale(0.97); opacity: 0; }
+        to { transform: none; opacity: 1; }
+      }
+      .mil-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 16px;
+        font-size: 1.5em;
+        color: #aaa;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.18s;
+      }
+      .mil-modal-close:hover {
+        color: #e5cb67;
+      }
+      .mil-modal .mil-btn-row {
+        display: flex;
+        gap: 10px;
+        margin: 22px 0 10px 0;
+        justify-content: center;
+      }
+      .mil-modal .mil-btn-row button {
+        flex: 1;
+        min-width: 0;
+        font-size: 1em;
+        padding: 10px 0;
+        border-radius: 18px;
+      }
+      .mil-modal .mil-btn-row button.mil-accent-bg {
+        background: #e5cb67;
+        color: #292929;
+        border: 1px solid #e5cb67;
+      }
+      .mil-modal .mil-btn-row button.mil-accent-bg:hover {
+        background: #fffbe6;
+      }
+      .mil-modal .mil-progress {
+        font-size: 1em;
+        margin-bottom: 10px;
+        color: #666;
+      }
+      .mil-modal h3 {
+        font-size: 1.25em;
+        margin-bottom: 0.5em;
+        font-weight: 600;
+      }
+      .mil-modal .mil-save-line {
+        font-size: 0.97em;
+        color: #888;
+        margin-bottom: 8px;
+      }
+    </style>
+
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HBZPWWL0SB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HBZPWWL0SB');
+</script>
+
+<body>
+
+    <!-- wrapper -->
+    <div class="mil-wrapper" id="top">
+
+        <!-- cursor -->
+        <div class="mil-ball">
+            <span class="mil-icon-1">
+                <svg viewBox="0 0 128 128">
+                    <path d="M106.1,41.9c-1.2-1.2-3.1-1.2-4.2,0c-1.2,1.2-1.2,3.1,0,4.2L116.8,61H11.2l14.9-14.9c1.2-1.2,1.2-3.1,0-4.2	c-1.2-1.2-3.1-1.2-4.2,0l-20,20c-1.2,1.2-1.2,3.1,0,4.2l20,20c0.6,0.6,1.4,0.9,2.1,0.9s1.5-0.3,2.1-0.9c1.2-1.2,1.2-3.1,0-4.2	L11.2,67h105.5l-14.9,14.9c-1.2,1.2-1.2,3.1,0,4.2c0.6,0.6,1.4,0.9,2.1,0.9s1.5-0.3,2.1-0.9l20-20c1.2-1.2,1.2-3.1,0-4.2L106.1,41.9	z" />
+                </svg>
+            </span>
+            <div class="mil-more-text">More</div>
+            <div class="mil-choose-text">Сhoose</div>
+        </div>
+        <!-- cursor end -->
+
+        <!-- preloader -->
+        <div class="mil-preloader">
+            <div class="mil-preloader-animation">
+                <div class="mil-pos-abs mil-animation-1">
+                    <p class="mil-h3 mil-muted mil-thin">Pioneer</p>
+                    <p class="mil-h3 mil-muted">Creative</p>
+                    <p class="mil-h3 mil-muted mil-thin">Community</p>
+                </div>
+                <div class="mil-pos-abs mil-animation-2">
+                    <div class="mil-reveal-frame">
+                        <p class="mil-reveal-box"></p>
+                        <p class="mil-h3 mil-muted mil-thin">corder.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- preloader end -->
+
+        <!-- scrollbar progress -->
+        <div class="mil-progress-track">
+            <div class="mil-progress"></div>
+        </div>
+        <!-- scrollbar progress end -->
+
+        <!-- menu -->
+        <div class="mil-menu-frame">
+            <!-- frame clone -->
+            <div class="mil-frame-top">
+                <a href="index.html" class="mil-logo">C.</a>
+                <div class="mil-menu-btn">
+                    <span></span>
+                </div>
+            </div>
+            <!-- frame clone end -->
+            <div class="container">
+                <div class="mil-menu-content">
+                    <div class="row">
+                        <div class="col-xl-5">
+
+                            <nav class="mil-main-menu" id="swupMenu">
+                                <ul>
+                                    <li class="mil-has-children">
+                                        <a href="index.html">Homepage</a>
+                                    </li>
+                                    <li class="mil-has-children">
+                                        <a href="services.html">Services</a>
+                                    </li>
+                                    <li class="mil-has-children">
+                                        <a href="blog.html">Blogs</a>
+                                    </li>
+                                    <li class="mil-has-children mil-active">
+                                        <a href="#.">Other pages</a>
+                                        <ul>
+                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="beta.html">Beta Testing</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                        </div>
+                        <div class="col-xl-7">
+
+                            <div class="mil-menu-right-frame">
+                                <div class="mil-animation-in">
+                                    <div class="mil-animation-frame">
+                                        <div class="mil-animation mil-position-1 mil-scale" data-value-1="2" data-value-2="2"></div>
+                                    </div>
+                                </div>
+                                <div class="mil-menu-right">
+                                    <div class="row">
+                                        <div class="col-lg-8 mil-mb-60">
+
+                                            <h6 class="mil-muted mil-mb-30">Publications</h6>
+
+                                            <ul class="mil-menu-list">
+                                                <li><a href="publication-food-insecurity.html" class="mil-light-soft">Food Insecurity</a></li>
+                                                <li><a href="publication-food-waste.html" class="mil-light-soft">Food Waste</a></li>
+                                                <li><a href="publication-rising-price.html" class="mil-light-soft">Rising prices</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                    <div class="mil-divider mil-mb-60"></div>
+                                    <div class="row justify-content-between">
+
+                                        <div class="col-lg-4 mil-mb-60">
+
+                                            <h6 class="mil-muted mil-mb-30">Canada</h6>
+
+                                            <p class="mil-light-soft mil-up">200 University Avenue West, Waterloo, <span class="mil-no-wrap"> Ontario, N2L 3G1</span></p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- menu -->
+
+        <!-- curtain -->
+        <div class="mil-curtain"></div>
+        <!-- curtain end -->
+
+        <!-- frame -->
+        <div class="mil-frame">
+            <div class="mil-frame-top">
+                <a href="index.html" class="mil-logo">C.</a>
+                <div class="mil-menu-btn">
+                    <span></span>
+                </div>
+            </div>
+            <div class="mil-frame-bottom">
+                <div class="mil-current-page"></div>
+                <div class="mil-back-to-top">
+                    <a href="#top" class="mil-link mil-dark mil-arrow-place">
+                        <span>Back to top</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- frame end -->
+
+        <!-- content -->
+        <div class="mil-content">
+            <div id="swupMain" class="mil-main-transition">
+
+                <!-- banner -->
+                <div class="mil-inner-banner">
+                    <div class="mil-animation-frame">
+                        <div class="mil-animation mil-position-4 mil-dark mil-scale" data-value-1="6" data-value-2="1.4"></div>
+                    </div>
+                    <div class="mil-banner-content mil-up">
+                        <div class="container">
+                            <ul class="mil-breadcrumbs mil-mb-60">
+                                <li><a href="index.html">Homepage</a></li>
+                                <li><a href="beta.html">Beta Testing</a></li>
+                            </ul>
+                            <h1 class="mil-mb-60">Beta <span class="mil-thin">Testing</span></h1>
+                            <a href="#introduction" class="mil-link mil-dark mil-arrow-place mil-down-arrow">
+                                <span>Learn more</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- banner end -->
+
+                <!-- introduction -->
+                <section id="introduction">
+                    <div class="container mil-p-120-90">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-lg-6 col-xl-5">
+                                <div class="mil-mb-90">
+                                    <h2 class="mil-up mil-mb-60">Welcome to <br> <span class="mil-thin">Beta Testing</span></h2>
+                                    <p class="mil-up mil-mb-30">
+                                        <span style="font-size: 1.2em;">This Beta Test is a simplified version of what the full Corder platform will offer. We're currently running it on a small scale with a curated list of fresh products and a manual checkout process.</span>
+                                    </p>
+                                    <p class="mil-up mil-mb-60">
+                                        <span style="font-size: 1.2em;">As a beta tester, you'll help us understand if students are willing to commit to orders based on group pricing, test our pricing structure, and see if we can successfully coordinate small group orders.</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="mil-about-photo mil-mb-90">
+                                    <div class="mil-lines-place"></div>
+                                    <div class="mil-up mil-img-frame" style="padding-bottom: 160%;">
+                                        <img src="img/beta-products/banner-grocery.png" alt="Beta Testing" class="mil-scale" data-value-1="1" data-value-2="1.2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- introduction end -->
+
+                <!-- beta comparison -->
+                <section class="mil-accent-bg">
+                    <div class="container mil-p-120-90">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <h2 class="mil-center mil-up mil-mb-60">What's <span class="mil-thin">Different?</span></h2>
+                                <p class="mil-center mil-up mil-mb-60" style="font-size: 1.2em;">
+                                    Here's how our beta version compares to the full Corder platform:
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="mil-comparison-table mil-up">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Feature</th>
+                                                    <th>Full Version</th>
+                                                    <th>Beta Version</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>Product Variety</strong></td>
+                                                    <td>Dozens of local goods from verified producers</td>
+                                                    <td>3–5 curated fresh produce items</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Group Order System</strong></td>
+                                                    <td>Live progress tracking + auto-charging if group fills</td>
+                                                    <td>Manual tracking via Discord and Google Sheets</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Payment</strong></td>
+                                                    <td>Card authorization, automatic charge or refund</td>
+                                                    <td>Manual e-transfer, refund/credit after group fills</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Delivery</strong></td>
+                                                    <td>Smart routing & multiple options</td>
+                                                    <td>Fixed pickup time/location or simple delivery</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- beta comparison end -->
+
+                <!-- how beta works -->
+                <section class="mil-soft-bg">
+                    <div class="container mil-p-120-90">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-lg-5 col-xl-4">
+                                <div class="mil-mb-90">
+                                    <h2 class="mil-up mil-mb-60">How <span class="mil-thin">Beta Works</span></h2>
+                                    <p class="mil-up mil-mb-30">Our beta testing process is designed to be simple and rewarding. Here's what you need to know about participating in our community-driven food platform.</p>
+                                    <p class="mil-up mil-mb-60">Click on any section below to learn more about the specific mechanisms and rules that make our beta testing program effective.</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">1. View Products & Prices</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30">On this page, you'll see a list of fresh products with:</p>
+                                        <ul class="mil-beta-list">
+                                            <li><strong>Solo Price</strong> (e.g., $9)</li>
+                                            <li><strong>Group Price</strong> (e.g., $6 if 5+ join)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">2. Join the Order</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30">Fill out the short order form with:</p>
+                                        <ul class="mil-beta-list">
+                                            <li>Name</li>
+                                            <li>Email</li>
+                                            <li>Discord Username</li>
+                                            <li>Quantity</li>
+                                            <li>Pickup Time Preference</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">3. Submit Payment</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30">To confirm your spot, send an e-transfer to:</p>
+                                        <ul class="mil-beta-list">
+                                            <li><strong>Email:</strong> justinyu070203@gmail.com</li>
+                                            <li><strong>Amount:</strong> [Displayed on form]</li>
+                                            <li><strong>Message:</strong> "Corder Beta + Your Full Name"</li>
+                                        </ul>
+                                        <p class="mil-mb-30">You will be added to our Discord server, where we post live updates on group order status.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">4. What Happens Next</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30">If the group fills by deadline (e.g., 5+ join by Wednesday 11:59 PM), you will receive a refund or credit for the group discount amount.</p>
+                                        <p class="mil-mb-30">If the group doesn't fill, you can choose to:</p>
+                                        <ul class="mil-beta-list">
+                                            <li>Proceed at the solo price (no refund)</li>
+                                            <li>Cancel and receive a full refund</li>
+                                        </ul>
+                                        <p class="mil-mb-30">We will notify all participants via Discord and email before Thursday 12PM.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">Payment Process</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30"><strong>In the full Corder app:</strong></p>
+                                        <ul class="mil-beta-list">
+                                            <li>You'd link your card and only be charged if the group fills</li>
+                                        </ul>
+                                        <p class="mil-mb-30"><strong>In this beta version:</strong></p>
+                                        <ul class="mil-beta-list">
+                                            <li>We collect full payment up front via e-transfer</li>
+                                            <li>If the group fills, we manually refund the difference or credit it to your next order</li>
+                                            <li>This helps us keep things simple while still simulating real behavior</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">Beta Policies</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <ul class="mil-beta-list">
+                                            <li><strong>Order Limit:</strong> Only 100 orders are accepted in this beta cycle</li>
+                                            <li><strong>Cutoff Time:</strong> Orders must be placed and paid by Wednesday 11:59 PM</li>
+                                            <li><strong>Pickup:</strong> Orders will be available for pickup on Thursday/Friday at [Campus Location]</li>
+                                            <li><strong>Refunds:</strong> If group discount applies, refund/credit will be processed by Sunday evening</li>
+                                            <li><strong>No Resale or Abuse:</strong> Please do not submit multiple orders under fake names — we verify via Discord and e-transfer matching</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- how beta works end -->
+
+                <!-- products -->
+                <section>
+                    <div class="container mil-p-120-90">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <h2 class="mil-center mil-up mil-mb-60">Available <span class="mil-thin">Products</span></h2>
+                                <p class="mil-center mil-up mil-mb-60" style="font-size: 1.2em;">
+                                    Discover our carefully curated selection of fresh, local products available for beta testing. Each category offers quality items at competitive prices.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card" style="background-image: url('img/beta-products/broccoli.png');">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">Fresh <br>Broccoli</h5>
+                                        <p class="mil-light-soft mil-mb-30">Local fresh broccoli from nearby farms. Perfect for healthy meals and group orders.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Starting at $1.99</span>
+                                        </div>
+                                    </div>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Broccoli" data-solo="1.99" data-group="1.49" data-progress="3" data-goal="5"><span>Order</span></button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card" style="background-image: url('img/beta-products/corn.png');">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">Fresh <br>Corn</h5>
+                                        <p class="mil-light-soft mil-mb-30">Sweet local corn, perfect for summer meals. Fresh from nearby farms.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Starting at $2.49</span>
+                                        </div>
+                                    </div>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Corn" data-solo="2.49" data-group="1.99" data-progress="2" data-goal="5"><span>Order</span></button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card" style="background-image: url('img/beta-products/celery.png');">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">Fresh <br>Celery</h5>
+                                        <p class="mil-light-soft mil-mb-30">Crisp local celery, great for cooking and snacking. Quality guaranteed.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Starting at $1.79</span>
+                                        </div>
+                                    </div>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Celery" data-solo="1.79" data-group="1.29" data-progress="4" data-goal="5"><span>Order</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card" style="background-image: url('img/beta-products/green-apple.png');">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">Fresh <br>Green Apples</h5>
+                                        <p class="mil-light-soft mil-mb-30">Crisp green apples from local orchards. Perfect for healthy snacking.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Starting at $2.99</span>
+                                        </div>
+                                    </div>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" 
+                                        data-product="Green Apple" 
+                                        data-solo="2.99" 
+                                        data-group="2.49" 
+                                        data-progress="1" 
+                                        data-goal="5"><span>Order</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">More <br>Products</h5>
+                                        <p class="mil-light-soft mil-mb-30">Additional fresh products coming soon. Stay tuned for more local options.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Coming Soon</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mil-service-card-sm mil-up mil-mb-30 mil-product-card">
+                                    <div class="mil-product-overlay">
+                                        <h5 class="mil-muted mil-mb-30">Bulk <br>Packages</h5>
+                                        <p class="mil-light-soft mil-mb-30">Larger quantities for families and group orders. Better value through bulk pricing.</p>
+                                        <div class="mil-product-preview">
+                                            <span class="mil-accent">Starting at $8.99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal for ordering -->
+                        <div class="mil-modal-overlay" id="milOrderModal">
+                          <div class="mil-modal">
+                            <button class="mil-modal-close" id="milModalClose">&times;</button>
+                            <h3 id="milModalProduct">Product Name</h3>
+                            <div class="mil-btn-row">
+                              <button id="milBuySolo" class="mil-button mil-arrow-place"><span>Buy Solo</span></button>
+                              <button id="milJoinGroup" class="mil-button mil-arrow-place mil-accent-bg"><span>Join Group</span></button>
+                            </div>
+                            <div class="mil-progress" id="milModalProgress">Current progress: 0 / 0</div>
+                            <div class="mil-save-line">Save $<span id="milModalSave">0</span> if 5+ join. You’ll get refund/credit after fill.</div>
+                          </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- products end -->
+
+                <!-- call to action -->
+                <section class="mil-dark-bg">
+                    <div class="mi-invert-fix">
+                        <div class="container mil-p-120-90">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <h2 class="mil-center mil-up mil-mb-60">Ready to <span class="mil-thin">Start Testing?</span></h2>
+                                    <p class="mil-center mil-up mil-mb-60" style="font-size: 1.2em;">
+                                        Join our beta testing community and be among the first to experience the future of community-based food purchasing.
+                                    </p>
+                                    <div class="mil-center mil-up">
+                                        <a href="#." class="mil-button mil-arrow-place mil-btn-space">
+                                            <span>Join Beta</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- call to action end -->
+
+                <!-- footer -->
+                <footer class="mil-dark-bg">
+                    <div class="mi-invert-fix">
+                        <div class="container mil-p-120-60">
+                            <div class="row justify-content-between">
+                                <div class="col-md-4 col-lg-4 mil-mb-60">
+
+                                    <div class="mil-muted mil-logo mil-up mil-mb-30">Corder.</div>
+
+                                    <p class="mil-light-soft mil-up mil-mb-30">Subscribe to Corder:</p>
+
+                                    <form action="https://formspree.io/f/mgvypldq" method="POST" class="mil-subscribe-form mil-up">
+                                        <input type="email" name="email" placeholder="Enter your email" required>
+                                        <button type="submit" class="mil-button mil-icon-button-sm mil-arrow-place"></button>
+                                    </form>
+
+                                </div>
+                                <div class="col-md-7 col-lg-6">
+                                    <div class="row justify-content-end">
+                                        <div class="col-md-6 col-lg-7">
+
+                                            <nav class="mil-footer-menu mil-mb-60">
+                                                <ul>
+                                                    <li class="mil-up">
+                                                        <a href="index.html">Home</a>
+                                                    </li>
+                                                    <li class="mil-up">
+                                                        <a href="services.html">Services</a>
+                                                    </li>
+                                                    <li class="mil-up">
+                                                        <a href="contact.html">Contact</a>
+                                                    </li>
+                                                    <li class="mil-up">
+                                                        <a href="blog.html">Blog</a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+
+                                        </div>
+                                        <div class="col-md-6 col-lg-5">
+
+                                            <ul class="mil-menu-list mil-up mil-mb-60">
+                                                <li><a href="#." class="mil-light-soft">Privacy Policy</a></li>
+                                                <li><a href="#." class="mil-light-soft">Terms and conditions</a></li>
+                                                <li><a href="#." class="mil-light-soft">Cookie Policy</a></li>
+                                                <li><a href="#." class="mil-light-soft">Careers</a></li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-between flex-sm-row-reverse">
+                                <div class="col-md-7 col-lg-6">
+
+                                    <div class="row justify-content-between">
+
+                                        <div class="col-md-6 col-lg-5 mil-mb-60">
+
+                                            <h6 class="mil-muted mil-up mil-mb-30">Canada</h6>
+
+                                            <p class="mil-light-soft mil-up">200 University Avenue West, Waterloo, <span class="mil-no-wrap"> Ontario, N2L 3G1</span></p>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 col-lg-6 mil-mb-60">
+
+                                    <div class="mil-vert-between">
+                                        <div class="mil-mb-30">
+                                            <ul class="mil-social-icons mil-up">
+                                                <li><a href="#." target="_blank" class="social-icon"> <i class="far fa-circle"></i></a></li>
+                                                <li><a href="#." target="_blank" class="social-icon"> <i class="far fa-circle"></i></a></li>
+                                                <li><a href="#." target="_blank" class="social-icon"> <i class="far fa-circle"></i></a></li>
+                                                <li><a href="#." target="_blank" class="social-icon"> <i class="far fa-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- footer end -->
+
+                <!-- hidden elements -->
+                <div class="mil-hidden-elements">
+                    <div class="mil-dodecahedron">
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div class="mil-pentagon">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mil-arrow">
+                        <path d="M 14 5.3417969 C 13.744125 5.3417969 13.487969 5.4412187 13.292969 5.6367188 L 13.207031 5.7226562 C 12.816031 6.1136563 12.816031 6.7467188 13.207031 7.1367188 L 17.070312 11 L 4 11 C 3.448 11 3 11.448 3 12 C 3 12.552 3.448 13 4 13 L 17.070312 13 L 13.207031 16.863281 C 12.816031 17.254281 12.816031 17.887344 13.207031 18.277344 L 13.292969 18.363281 C 13.683969 18.754281 14.317031 18.754281 14.707031 18.363281 L 20.363281 12.707031 C 20.754281 12.316031 20.754281 11.682969 20.363281 11.292969 L 14.707031 5.6367188 C 14.511531 5.4412187 14.255875 5.3417969 14 5.3417969 z" />
+                    </svg>
+
+                    <svg width="250" viewBox="0 0 300 1404" fill="none" xmlns="http://www.w3.org/2000/svg" class="mil-lines">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1 892L1 941H299V892C299 809.71 232.29 743 150 743C67.7096 743 1 809.71 1 892ZM0 942H300V892C300 809.157 232.843 742 150 742C67.1573 742 0 809.157 0 892L0 942Z" class="mil-move" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M299 146V97L1 97V146C1 228.29 67.7096 295 150 295C232.29 295 299 228.29 299 146ZM300 96L0 96V146C0 228.843 67.1573 296 150 296C232.843 296 300 228.843 300 146V96Z" class="mil-move" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M299 1H1V1403H299V1ZM0 0V1404H300V0H0Z" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M150 -4.37115e-08L150 1404L149 1404L149 0L150 -4.37115e-08Z" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M150 1324C232.29 1324 299 1257.29 299 1175C299 1092.71 232.29 1026 150 1026C67.7096 1026 1 1092.71 1 1175C1 1257.29 67.7096 1324 150 1324ZM150 1325C232.843 1325 300 1257.84 300 1175C300 1092.16 232.843 1025 150 1025C67.1573 1025 0 1092.16 0 1175C0 1257.84 67.1573 1325 150 1325Z" class="mil-move" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M300 1175H0V1174H300V1175Z" class="mil-move" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M150 678C232.29 678 299 611.29 299 529C299 446.71 232.29 380 150 380C67.7096 380 1 446.71 1 529C1 611.29 67.7096 678 150 678ZM150 679C232.843 679 300 611.843 300 529C300 446.157 232.843 379 150 379C67.1573 379 0 446.157 0 529C0 611.843 67.1573 679 150 679Z" class="mil-move" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M299 380H1V678H299V380ZM0 379V679H300V379H0Z" class="mil-move" />
+                    </svg>
+                </div>
+                <!-- hidden elements end -->
+
+            </div>
+        </div>
+        <!-- content -->
+    </div>
+    <!-- wrapper end -->
+
+    <!-- jQuery js -->
+    <script src="js/plugins/jquery.min.js"></script>
+    <!-- swup js -->
+    <script src="js/plugins/swup.min.js"></script>
+    <!-- swiper js -->
+    <script src="js/plugins/swiper.min.js"></script>
+    <!-- fancybox js -->
+    <script src="js/plugins/fancybox.min.js"></script>
+    <!-- gsap js -->
+    <script src="js/plugins/gsap.min.js"></script>
+    <!-- scroll smoother -->
+    <script src="js/plugins/smooth-scroll.js"></script>
+    <!-- scroll trigger js -->
+    <script src="js/plugins/ScrollTrigger.min.js"></script>
+    <!-- scroll to js -->
+    <script src="js/plugins/ScrollTo.min.js"></script>
+    <!-- corder js -->
+    <script src="js/main.js"></script>
+    <!-- beta js -->
+    <script src="js/beta.js"></script>
+
+    <!-- Firebase Config and Initialization -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDZ4VgjREjDEWKzpY6M34XyJg-Yi56YOX0",
+        authDomain: "farmers-a0933.firebaseapp.com",
+        projectId: "farmers-a0933",
+      };
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+
+</body>
+
+</html>

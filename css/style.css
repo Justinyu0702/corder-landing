@@ -859,6 +859,12 @@ backgrounds
   background-color: rgb(242, 242, 242);
 }
 
+.mil-accent-bg {
+  background-color: #e5cb67;
+  position: relative;
+  overflow: hidden;
+}
+
 /* -------------------------------------------
 
 spaces
@@ -4264,4 +4270,261 @@ html.is-animating .mil-menu-frame {
   opacity: 0;
   -webkit-transition-delay: 0.3s;
           transition-delay: 0.3s;
+}
+
+/* -------------------------------------------
+
+product items
+
+------------------------------------------- */
+.mil-product-item {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.mil-product-item:last-child {
+  border-bottom: none;
+}
+
+.mil-product-item:hover {
+  background-color: rgba(229, 203, 103, 0.05);
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  border-radius: 5px;
+}
+
+.mil-product-item h6 {
+  margin: 0 0 5px 0;
+  font-weight: 500;
+  color: #292929;
+}
+
+.mil-product-item p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.mil-product-item .mil-accent {
+  font-weight: 600;
+  font-size: 16px;
+  color: #e5cb67;
+}
+
+@media screen and (max-width: 768px) {
+  .mil-product-item {
+    padding: 12px 0;
+  }
+  
+  .mil-product-item h6 {
+    font-size: 16px;
+  }
+  
+  .mil-product-item p {
+    font-size: 13px;
+  }
+  
+  .mil-product-item .mil-accent {
+    font-size: 15px;
+  }
+}
+
+/* -------------------------------------------
+
+product preview
+
+------------------------------------------- */
+.mil-product-preview {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mil-product-preview .mil-accent {
+  font-weight: 600;
+  font-size: 14px;
+  color: #e5cb67;
+}
+
+@media screen and (max-width: 768px) {
+  .mil-product-preview {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  
+  .mil-product-preview .mil-accent {
+    font-size: 13px;
+  }
+}
+
+/* -------------------------------------------
+
+comparison table
+
+------------------------------------------- */
+.mil-comparison-table {
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+}
+
+.mil-comparison-table .table {
+  margin-bottom: 0;
+}
+
+.mil-comparison-table .table th {
+  border: none;
+  background: #f8f9fa;
+  color: #292929;
+  font-weight: 600;
+  padding: 15px;
+  text-align: center;
+}
+
+.mil-comparison-table .table th:first-child {
+  text-align: left;
+}
+
+.mil-comparison-table .table td {
+  border: none;
+  border-bottom: 1px solid #eee;
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.mil-comparison-table .table td:first-child {
+  font-weight: 600;
+  color: #292929;
+}
+
+.mil-comparison-table .table tr:last-child td {
+  border-bottom: none;
+}
+
+@media screen and (max-width: 768px) {
+  .mil-comparison-table {
+    padding: 20px;
+  }
+  
+  .mil-comparison-table .table th,
+  .mil-comparison-table .table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* -------------------------------------------
+
+beta list
+
+------------------------------------------- */
+.mil-beta-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.mil-beta-list li {
+  position: relative;
+  padding: 8px 0 8px 20px;
+  margin-bottom: 5px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.mil-beta-list li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #e5cb67;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mil-beta-list li strong {
+  color: #292929;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 768px) {
+  .mil-beta-list li {
+    padding: 6px 0 6px 18px;
+    font-size: 14px;
+  }
+}
+
+/* -------------------------------------------
+
+product cards with background images
+
+------------------------------------------- */
+.mil-product-card {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 300px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mil-product-overlay {
+  opacity: 0;
+  text-align: center;
+  background-color: rgba(41, 41, 41, 0.8);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 60px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+  transition: 0.6s cubic-bezier(0, 0, 0.3642, 1);
+  z-index: 2;
+}
+
+.mil-product-overlay h5,
+.mil-product-overlay p,
+.mil-product-overlay .mil-product-preview {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: 0.4s cubic-bezier(0, 0, 0.3642, 1);
+  transition-delay: 0s;
+}
+
+.mil-product-card:hover .mil-product-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mil-product-card:hover .mil-product-overlay h5,
+.mil-product-card:hover .mil-product-overlay p,
+.mil-product-card:hover .mil-product-overlay .mil-product-preview {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+.mil-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .mil-product-card {
+    min-height: 250px;
+  }
+  
+  .mil-product-overlay {
+    padding: 40px 20px;
+  }
 }
