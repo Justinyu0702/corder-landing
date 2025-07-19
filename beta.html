@@ -24,6 +24,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <!-- Firebase Functions -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-functions-compat.js"></script>
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
     <!-- page name -->
     <title>Beta Testing | Corder</title>
     <style>
@@ -164,6 +166,39 @@
       /* Prevent body scroll when modal is open */
       body.modal-open {
         overflow: hidden !important;
+      }
+      /* Payment form styles */
+      .mil-form-group {
+        margin-bottom: 16px !important;
+        text-align: left !important;
+      }
+      .mil-form-group input {
+        width: 100% !important;
+        padding: 12px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        box-sizing: border-box !important;
+      }
+      #card-element {
+        padding: 12px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 8px !important;
+        background: white !important;
+        margin-bottom: 8px !important;
+      }
+      .mil-error {
+        color: #dc3545 !important;
+        font-size: 12px !important;
+        margin-top: 4px !important;
+        text-align: left !important;
+      }
+      #submitPayment {
+        width: 100% !important;
+        margin-top: 16px !important;
+      }
+      #groupOrderSection {
+        display: block !important;
       }
     </style>
 
@@ -583,7 +618,7 @@
                                             <span class="mil-accent">Starting at $1.99</span>
                                         </div>
                                     </div>
-                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Broccoli" data-solo="1.99" data-group="1.49" data-progress="3" data-goal="5"><span>Order</span></button>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Broccoli" data-solo="1.99" data-group="1.49" data-progress="3" data-goal="5" data-product-id="broccoli"><span>Order</span></button>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -595,7 +630,7 @@
                                             <span class="mil-accent">Starting at $2.49</span>
                                         </div>
                                     </div>
-                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Corn" data-solo="2.49" data-group="1.99" data-progress="2" data-goal="5"><span>Order</span></button>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Corn" data-solo="2.49" data-group="1.99" data-progress="2" data-goal="5" data-product-id="corn"><span>Order</span></button>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -607,7 +642,7 @@
                                             <span class="mil-accent">Starting at $1.79</span>
                                         </div>
                                     </div>
-                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Celery" data-solo="1.79" data-group="1.29" data-progress="4" data-goal="5"><span>Order</span></button>
+                                    <button class="mil-order-btn mil-button mil-arrow-place" data-product="Celery" data-solo="1.79" data-group="1.29" data-progress="4" data-goal="5" data-product-id="celery"><span>Order</span></button>
                                 </div>
                             </div>
                         </div>
@@ -626,7 +661,8 @@
                                         data-solo="2.99" 
                                         data-group="2.49" 
                                         data-progress="1" 
-                                        data-goal="5"><span>Order</span>
+                                        data-goal="5"
+                                        data-product-id="prod_Sh5ZhrYl1zlGGY"><span>Order</span>
                                     </button>
                                 </div>
                             </div>
@@ -658,10 +694,36 @@
                           <div class="mil-modal">
                             <button class="mil-modal-close" id="milModalClose">&times;</button>
                             <h3 id="milModalProduct">Product Name</h3>
-                            <div class="mil-btn-row">
-                              <button id="milBuySolo" class="mil-button mil-arrow-place"><span>Buy Solo</span></button>
-                              <button id="milJoinGroup" class="mil-button mil-arrow-place mil-accent-bg"><span>Join Group</span></button>
+                            
+                            <!-- Solo Order Section -->
+                            <div id="soloOrderSection">
+                              <div class="mil-btn-row">
+                                <button id="milBuySolo" class="mil-button mil-arrow-place"><span>Buy Solo</span></button>
+                              </div>
                             </div>
+                            
+                            <!-- Group Order Section -->
+                            <div id="groupOrderSection" style="display: none;">
+                              <div class="mil-btn-row">
+                                <button id="milJoinGroup" class="mil-button mil-arrow-place mil-accent-bg"><span>Join Group</span></button>
+                              </div>
+                              
+                              <!-- Payment Form (initially hidden) -->
+                              <div id="paymentForm" style="display: none;">
+                                <div class="mil-form-group">
+                                  <input type="text" id="customerName" placeholder="Full Name" required>
+                                </div>
+                                <div class="mil-form-group">
+                                  <input type="email" id="customerEmail" placeholder="Email" required>
+                                </div>
+                                <div class="mil-form-group">
+                                  <div id="card-element"></div>
+                                  <div id="card-errors" class="mil-error"></div>
+                                </div>
+                                <button id="submitPayment" class="mil-button mil-arrow-place">Confirm Payment</button>
+                              </div>
+                            </div>
+                            
                             <div class="mil-progress" id="milModalProgress">Current progress: 0 / 0</div>
                             <div class="mil-save-line">Save $<span id="milModalSave">0</span> if 5+ join. You'll get refund/credit after group fills.</div>
                           </div>
