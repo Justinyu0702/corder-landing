@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const progress = btn.getAttribute('data-progress');
       const goal = btn.getAttribute('data-goal');
       const save = (parseFloat(solo) - parseFloat(group)).toFixed(2);
-      const productId = btn.getAttribute('data-product-id') || 'green-apple';
+      const productId = btn.getAttribute('data-product-id');
 
       currentProduct = product;
       currentSolo = solo;
@@ -79,8 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
       currentProductId = productId;
 
       modalProduct.textContent = product;
-      buySoloBtn.innerHTML = `<span>Buy Solo - $${solo}</span>`;
-      joinGroupBtn.innerHTML = `<span>Join Group - $${group}</span>`;
+      // Set modal button labels: label thin, price bold
+      buySoloBtn.innerHTML = `<span style="font-weight:400;">Buy Solo</span><span style="font-weight:700;">$${solo}</span>`;
+      joinGroupBtn.innerHTML = `<span style="font-weight:400;">Join Group</span><span style="font-weight:700;">$${group}</span>`;
       modalProgress.textContent = `Current progress: ${progress} / ${goal}`;
       modalSave.textContent = save;
 
