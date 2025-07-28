@@ -429,30 +429,45 @@
                                             <thead>
                                                 <tr>
                                                     <th>Feature</th>
-                                                    <th>Full Version</th>
                                                     <th>Beta Version</th>
+                                                    <th>Full Version</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><strong>Product Variety</strong></td>
-                                                    <td>Dozens of local goods from verified producers</td>
-                                                    <td>3–5 curated fresh produce items</td>
+                                                    <td><strong>Product Selection</strong></td>
+                                                    <td>Limited catalog of fresh produce to test core ordering features.</td>
+                                                    <td>Full range of local produce, partner farms, and specialty items.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Group Order System</strong></td>
-                                                    <td>Live progress tracking + auto-charging if group fills</td>
-                                                    <td>Manual tracking via Discord and Google Sheets</td>
+                                                    <td><strong>Ordering Options</strong></td>
+                                                    <td>Solo Orders and Group Orders available in basic form.</td>
+                                                    <td>Advanced ordering with live tracking, scheduling, and bulk deals.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Payment</strong></td>
-                                                    <td>Card authorization, automatic charge or refund</td>
-                                                    <td>Manual e-transfer, refund/credit after group fills</td>
+                                                    <td><strong>Delivery/Pickup</strong></td>
+                                                    <td>Restricted to specific test zones and fixed pickup times.</td>
+                                                    <td>Expanded delivery network, flexible pickup points, real-time updates.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Delivery</strong></td>
-                                                    <td>Smart routing & multiple options</td>
-                                                    <td>Fixed pickup time/location or simple delivery</td>
+                                                    <td><strong>Payments</strong></td>
+                                                    <td>Stripe-based test payments, card authorization for group orders.</td>
+                                                    <td>Fully integrated payments with loyalty rewards and multiple methods.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Notifications</strong></td>
+                                                    <td>Basic email and SMS when orders are confirmed or groups fill.</td>
+                                                    <td>Rich notifications, live order updates, and in-app tracking.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>User Experience (UI/UX)</strong></td>
+                                                    <td>Early interface focused on functionality and testing.</td>
+                                                    <td>Polished, full-featured interface with improved navigation and design.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Feedback & Support</strong></td>
+                                                    <td>Dedicated feedback channels to shape the app.</td>
+                                                    <td>Standard support plus in-app help and FAQs.</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -487,88 +502,114 @@
                                     <div class="mil-accordion-content">
                                         <p class="mil-mb-30">On this page, you'll see a list of fresh products with:</p>
                                         <ul class="mil-beta-list">
-                                            <li><strong>Solo Price</strong> (e.g., $9)</li>
-                                            <li><strong>Group Price</strong> (e.g., $6 if 5+ join)</li>
+                                            <li><strong>Solo Price</strong> (e.g., $2.99) - Immediate purchase</li>
+                                            <li><strong>Group Price</strong> (e.g., $2.49 if 5+ join) - Better value when group fills</li>
                                         </ul>
                                     </div>
                                 </div>
 
                                 <div class="mil-accordion-group mil-up">
                                     <div class="mil-accordion-menu">
-                                        <p class="mil-accordion-head">2. Join the Order</p>
+                                        <p class="mil-accordion-head">2. Choose Your Order Type</p>
                                         <div class="mil-symbol mil-h3">
                                             <div class="mil-plus">+</div>
                                             <div class="mil-minus">-</div>
                                         </div>
                                     </div>
                                     <div class="mil-accordion-content">
-                                        <p class="mil-mb-30">Fill out the short order form with:</p>
+                                        <p class="mil-mb-30">You have two options:</p>
                                         <ul class="mil-beta-list">
-                                            <li>Name</li>
-                                            <li>Email</li>
-                                            <li>Discord Username</li>
-                                            <li>Quantity</li>
-                                            <li>Pickup Time Preference</li>
+                                            <li><strong>Buy Solo:</strong> Immediate purchase at solo price</li>
+                                            <li><strong>Join Group:</strong> Join existing group order for better pricing</li>
+                                        </ul>
+                                        <p class="mil-mb-30">Click on any product to see both options and current group progress.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">3. Complete Payment Form</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30">Fill out the secure payment form with:</p>
+                                        <ul class="mil-beta-list">
+                                            <li><strong>Full Name</strong> (for order identification)</li>
+                                            <li><strong>Email Address</strong> (for order updates and notifications)</li>
+                                            <li><strong>Phone Number</strong> (for SMS notifications and delivery updates)</li>
+                                            <li><strong>Card Information</strong> (secure Stripe payment processing)</li>
+                                        </ul>
+                                        <p class="mil-mb-30">All information is encrypted and securely processed through Stripe.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mil-accordion-group mil-up">
+                                    <div class="mil-accordion-menu">
+                                        <p class="mil-accordion-head">4. Payment Processing</p>
+                                        <div class="mil-symbol mil-h3">
+                                            <div class="mil-plus">+</div>
+                                            <div class="mil-minus">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="mil-accordion-content">
+                                        <p class="mil-mb-30"><strong>For Solo Orders:</strong></p>
+                                        <ul class="mil-beta-list">
+                                            <li>Payment is processed immediately</li>
+                                            <li>You receive instant confirmation</li>
+                                            <li>Order is confirmed and scheduled for pickup/delivery</li>
+                                        </ul>
+                                        <p class="mil-mb-30"><strong>For Group Orders:</strong></p>
+                                        <ul class="mil-beta-list">
+                                            <li>Payment is authorized but not charged until group fills</li>
+                                            <li>You're added to the group order</li>
+                                            <li>If group fills by deadline, payment is processed at group price</li>
+                                            <li>If group doesn't fill, you can cancel or proceed at solo price</li>
                                         </ul>
                                     </div>
                                 </div>
 
                                 <div class="mil-accordion-group mil-up">
                                     <div class="mil-accordion-menu">
-                                        <p class="mil-accordion-head">3. Submit Payment</p>
+                                        <p class="mil-accordion-head">5. Notifications & Updates</p>
                                         <div class="mil-symbol mil-h3">
                                             <div class="mil-plus">+</div>
                                             <div class="mil-minus">-</div>
                                         </div>
                                     </div>
                                     <div class="mil-accordion-content">
-                                        <p class="mil-mb-30">To confirm your spot, send an e-transfer to:</p>
+                                        <p class="mil-mb-30">You'll receive updates through multiple channels:</p>
                                         <ul class="mil-beta-list">
-                                            <li><strong>Email:</strong> justinyu070203@gmail.com</li>
-                                            <li><strong>Amount:</strong> [Displayed on form]</li>
-                                            <li><strong>Message:</strong> "Corder Beta + Your Full Name"</li>
+                                            <li><strong>Email Notifications:</strong> Order confirmation, group status updates, pickup reminders</li>
+                                            <li><strong>SMS Messages:</strong> Real-time group progress, pickup time confirmations, delivery updates</li>
+                                            <li><strong>In-App Updates:</strong> Live group order progress tracking</li>
                                         </ul>
-                                        <p class="mil-mb-30">You will be added to our Discord server, where we post live updates on group order status.</p>
+                                        <p class="mil-mb-30">All communications include your order details and pickup/delivery information.</p>
                                     </div>
                                 </div>
 
                                 <div class="mil-accordion-group mil-up">
                                     <div class="mil-accordion-menu">
-                                        <p class="mil-accordion-head">4. What Happens Next</p>
+                                        <p class="mil-accordion-head">6. Pickup & Delivery</p>
                                         <div class="mil-symbol mil-h3">
                                             <div class="mil-plus">+</div>
                                             <div class="mil-minus">-</div>
                                         </div>
                                     </div>
                                     <div class="mil-accordion-content">
-                                        <p class="mil-mb-30">If the group fills by deadline (e.g., 5+ join by Wednesday 11:59 PM), you will receive a refund or credit for the group discount amount.</p>
-                                        <p class="mil-mb-30">If the group doesn't fill, you can choose to:</p>
+                                        <p class="mil-mb-30"><strong>Pickup Option:</strong></p>
                                         <ul class="mil-beta-list">
-                                            <li>Proceed at the solo price (no refund)</li>
-                                            <li>Cancel and receive a full refund</li>
+                                            <li>Fixed pickup location on campus</li>
+                                            <li>Designated pickup times (Thursday/Friday)</li>
+                                            <li>SMS reminder 1 hour before pickup</li>
                                         </ul>
-                                        <p class="mil-mb-30">We will notify all participants via Discord and email before Thursday 12PM.</p>
-                                    </div>
-                                </div>
-
-                                <div class="mil-accordion-group mil-up">
-                                    <div class="mil-accordion-menu">
-                                        <p class="mil-accordion-head">Payment Process</p>
-                                        <div class="mil-symbol mil-h3">
-                                            <div class="mil-plus">+</div>
-                                            <div class="mil-minus">-</div>
-                                        </div>
-                                    </div>
-                                    <div class="mil-accordion-content">
-                                        <p class="mil-mb-30"><strong>In the full Corder app:</strong></p>
+                                        <p class="mil-mb-30"><strong>Delivery Option:</strong></p>
                                         <ul class="mil-beta-list">
-                                            <li>You'd link your card and only be charged if the group fills</li>
-                                        </ul>
-                                        <p class="mil-mb-30"><strong>In this beta version:</strong></p>
-                                        <ul class="mil-beta-list">
-                                            <li>We collect full payment up front via e-transfer</li>
-                                            <li>If the group fills, we manually refund the difference or credit it to your next order</li>
-                                            <li>This helps us keep things simple while still simulating real behavior</li>
+                                            <li>Available for group orders that fill</li>
+                                            <li>Delivery to campus locations</li>
+                                            <li>Real-time delivery tracking via SMS</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -584,10 +625,12 @@
                                     <div class="mil-accordion-content">
                                         <ul class="mil-beta-list">
                                             <li><strong>Order Limit:</strong> Only 100 orders are accepted in this beta cycle</li>
-                                            <li><strong>Cutoff Time:</strong> Orders must be placed and paid by Wednesday 11:59 PM</li>
-                                            <li><strong>Pickup:</strong> Orders will be available for pickup on Thursday/Friday at [Campus Location]</li>
-                                            <li><strong>Refunds:</strong> If group discount applies, refund/credit will be processed by Sunday evening</li>
-                                            <li><strong>No Resale or Abuse:</strong> Please do not submit multiple orders under fake names — we verify via Discord and e-transfer matching</li>
+                                            <li><strong>Cutoff Time:</strong> Orders must be placed by Wednesday 11:59 PM</li>
+                                            <li><strong>Group Deadline:</strong> Groups must fill by Wednesday 11:59 PM to qualify for group pricing</li>
+                                            <li><strong>Pickup:</strong> Orders available Thursday/Friday at campus location</li>
+                                            <li><strong>Refunds:</strong> Available if group doesn't fill and you choose not to proceed</li>
+                                            <li><strong>Security:</strong> All payments processed securely through Stripe</li>
+                                            <li><strong>Privacy:</strong> Your information is protected and only used for order processing</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -696,25 +739,28 @@
                             </div>
                             
                             <!-- Group Order Section -->
-                            <div id="groupOrderSection" style="display: none;">
+                            <div id="groupOrderSection">
                               <div class="mil-btn-row">
                                 <button id="milJoinGroup" class="mil-button mil-arrow-place mil-accent-bg"><span>Join Group</span></button>
                               </div>
-                              
-                              <!-- Payment Form (initially hidden) -->
-                              <div id="paymentForm" style="display: none;">
-                                <div class="mil-form-group">
-                                  <input type="text" id="customerName" placeholder="Full Name" required>
-                                </div>
-                                <div class="mil-form-group">
-                                  <input type="email" id="customerEmail" placeholder="Email" required>
-                                </div>
-                                <div class="mil-form-group">
-                                  <div id="card-element"></div>
-                                  <div id="card-errors" class="mil-error"></div>
-                                </div>
-                                <button id="submitPayment" class="mil-button mil-arrow-place">Confirm Payment</button>
+                            </div>
+                            
+                            <!-- Payment Form (initially hidden) -->
+                            <div id="paymentForm" style="display: none;">
+                              <div class="mil-form-group">
+                                <input type="text" id="customerName" placeholder="Full Name" required>
                               </div>
+                              <div class="mil-form-group">
+                                <input type="email" id="customerEmail" placeholder="Email" required>
+                              </div>
+                              <div class="mil-form-group">
+                                <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+                              </div>
+                              <div class="mil-form-group">
+                                <div id="card-element"></div>
+                                <div id="card-errors" class="mil-error"></div>
+                              </div>
+                              <button id="submitPayment" class="mil-button mil-arrow-place">Confirm Payment</button>
                             </div>
                             
                             <div class="mil-progress" id="milModalProgress">Current progress: 0 / 0</div>
@@ -838,6 +884,7 @@
                 <!-- hidden elements -->
                 <div class="mil-hidden-elements">
                     <div class="mil-dodecahedron">
+                        
                         <div class="mil-pentagon">
                             <div></div>
                             <div></div>
@@ -852,118 +899,7 @@
                             <div></div>
                             <div></div>
                         </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div class="mil-pentagon">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
+                       
                     </div>
 
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mil-arrow">
@@ -980,13 +916,13 @@
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M150 678C232.29 678 299 611.29 299 529C299 446.71 232.29 380 150 380C67.7096 380 1 446.71 1 529C1 611.29 67.7096 678 150 678ZM150 679C232.843 679 300 611.843 300 529C300 446.157 232.843 379 150 379C67.1573 379 0 446.157 0 529C0 611.843 67.1573 679 150 679Z" class="mil-move" />
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M299 380H1V678H299V380ZM0 379V679H300V379H0Z" class="mil-move" />
                     </svg>
-                </div>
+                        </div>
                 <!-- hidden elements end -->
 
-            </div>
-        </div>
+                        </div>
+                        </div>
         <!-- content -->
-    </div>
+                        </div>
     <!-- wrapper end -->
 
     <!-- jQuery js -->

@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const paymentForm = document.getElementById('paymentForm');
   const customerName = document.getElementById('customerName');
   const customerEmail = document.getElementById('customerEmail');
+  const customerPhone = document.getElementById('customerPhone');
   const submitPayment = document.getElementById('submitPayment');
   const cardErrors = document.getElementById('card-errors');
 
@@ -101,6 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide modal
   function closeModal() {
     modalOverlay.classList.remove('active');
+    modalOverlay.classList.remove('payment-form-active');
+    // Reset order sections for next time
+    soloOrderSection.style.removeProperty('display');
+    groupOrderSection.style.removeProperty('display');
+    // Hide payment form
+    paymentForm.style.display = 'none';
     document.body.style.overflow = '';
   }
   modalClose.addEventListener('click', closeModal);
@@ -108,60 +115,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === modalOverlay) closeModal();
   });
 
-  // Handle form submission for solo orders
-  buySoloBtn.addEventListener('click', async function() {
-    try {
-      buySoloBtn.innerHTML = `<span>Processing...</span>`;
-      buySoloBtn.disabled = true;
-      const name = prompt('Please enter your name:');
-      const email = prompt('Please enter your email:');
-      if (!name || !email) {
-        alert('Name and email are required');
-        buySoloBtn.innerHTML = `<span>Buy Solo - $${currentSolo}</span>`;
-        buySoloBtn.disabled = false;
-        return;
-      }
-      const product = currentProduct;
-      const orderType = 'solo';
-      // Use Firebase Functions httpsCallable
-      const functions = firebase.app().functions('us-central1');
-      const createCheckoutSession = functions.httpsCallable('createCheckoutSession');
-      const result = await createCheckoutSession({
-        name,
-        email,
-        product,
-        orderType
-      });
-      if (result.data && result.data.url) {
-        window.location.href = result.data.url;
-      } else {
-        throw new Error('No checkout URL returned');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('There was an error processing your order. Please try again.');
-      buySoloBtn.innerHTML = `<span>Buy Solo - $${currentSolo}</span>`;
-      buySoloBtn.disabled = false;
-    }
+  // Helper to open payment form in a given mode
+  function openPaymentForm(mode) {
+    paymentForm.style.display = 'block';
+    // Hide both order sections completely with !important
+    soloOrderSection.style.setProperty('display', 'none', 'important');
+    groupOrderSection.style.setProperty('display', 'none', 'important');
+    customerName.value = '';
+    customerEmail.value = '';
+    customerPhone.value = '';
+    cardErrors.textContent = '';
+    customerName.focus();
+    paymentForm.setAttribute('data-mode', mode);
+    // Add class to modal to track payment form is active
+    modalOverlay.classList.add('payment-form-active');
+  }
+
+  // Buy Solo button: open payment form in solo mode
+  buySoloBtn.addEventListener('click', function() {
+    openPaymentForm('solo');
   });
 
-  // Handle group orders - show payment form
-  joinGroupBtn.addEventListener('click', async function() {
-    try {
-      // Show payment form
-      paymentForm.style.display = 'block';
-      joinGroupBtn.style.display = 'none';
-      
-      // Focus on name input
-      customerName.focus();
-      
-    } catch (error) {
-      console.error('Error:', error);
-      alert('There was an error. Please try again.');
-    }
+  // Join Group button: open payment form in group mode
+  joinGroupBtn.addEventListener('click', function() {
+    openPaymentForm('group');
   });
 
-  // Handle payment submission
+  // Handle payment submission (for both solo and group)
   submitPayment.addEventListener('click', async function() {
     try {
       submitPayment.innerHTML = `<span>Processing...</span>`;
@@ -169,9 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const name = customerName.value.trim();
       const email = customerEmail.value.trim();
+      const phone = customerPhone.value.trim();
       
-      if (!name || !email) {
-        alert('Please fill in your name and email');
+      if (!name || !email || !phone) {
+        alert('Please fill in your name, email, and phone number');
         submitPayment.innerHTML = `<span>Confirm Payment</span>`;
         submitPayment.disabled = false;
         return;
@@ -187,30 +168,51 @@ document.addEventListener('DOMContentLoaded', () => {
       // Generate user ID
       currentUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-      // Step 1: Join the group order
       const functions = firebase.app().functions('us-central1');
-      const joinGroupOrder = functions.httpsCallable('joinGroupOrder');
-      
-      const joinResult = await joinGroupOrder({
-        productId: currentProductId,
-        userId: currentUserId,
-        email: email
-      });
-
-      if (!joinResult.data || !joinResult.data.clientSecret) {
-        throw new Error('Failed to join group order');
+      let clientSecret, orderId;
+      const mode = paymentForm.getAttribute('data-mode');
+      if (mode === 'solo') {
+        // SOLO ORDER: Call createDirectOrder
+        const createDirectOrder = functions.httpsCallable('createDirectOrder');
+        const result = await createDirectOrder({
+          product_name: currentProduct,
+          productId: currentProductId,
+          userId: currentUserId,
+          email: email,
+          phone: phone
+        });
+        if (!result.data || !result.data.clientSecret) {
+          throw new Error('Failed to create direct order');
+        }
+        clientSecret = result.data.clientSecret;
+        orderId = result.data.orderId;
+      } else if (mode === 'group') {
+        // GROUP ORDER: Call joinGroupOrder
+        const joinGroupOrder = functions.httpsCallable('joinGroupOrder');
+        const joinResult = await joinGroupOrder({
+          currentProduct: currentProduct,
+          productId: currentProductId,
+          userId: currentUserId,
+          email: email,
+          phone: phone
+        });
+        if (!joinResult.data || !joinResult.data.clientSecret) {
+          throw new Error('Failed to join group order');
+        }
+        clientSecret = joinResult.data.clientSecret;
+        orderId = joinResult.data.groupOrderId;
+      } else {
+        throw new Error('Unknown order mode');
       }
 
-      currentClientSecret = joinResult.data.clientSecret;
-      currentGroupOrderId = joinResult.data.groupOrderId;
-
       // Step 2: Confirm payment with Stripe Elements
-      const { error, paymentIntent } = await stripe.confirmCardPayment(currentClientSecret, {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
           billing_details: {
             name: name,
-            email: email
+            email: email,
+            phone: phone
           }
         }
       });
@@ -219,32 +221,39 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Payment failed: ${error.message}`);
       }
 
-      if (paymentIntent.status === 'requires_capture') {
-        // Step 3: Confirm group join success
-        const confirmGroupJoinSuccess = functions.httpsCallable('confirmGroupJoinSuccess');
-        console.log("currentGroupOrderId", currentGroupOrderId);
-        
-        await confirmGroupJoinSuccess({
-          groupOrderId: currentGroupOrderId,
-          userId: currentUserId
-        });
-
-        // Step 4: Check if group is full and capture payments
-        const checkAndCaptureGroupIfFull = functions.httpsCallable('checkAndCaptureGroupIfFull');
-        const captureResult = await checkAndCaptureGroupIfFull({
-          groupOrderId: currentGroupOrderId
-        });
-
-        // Show success message
-        alert(`Successfully joined group order! ${captureResult.data.message}`);
-        closeModal();
+      if (paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture') {
+        if (mode === 'solo') {
+          alert('Payment successful! Thank you for your order.');
+          closeModal();
+          const updateDirectOrderStatus = functions.httpsCallable('updateDirectOrderStatus');
+          await updateDirectOrderStatus({
+            orderId: orderId,
+            status: 'captured',
+            paymentIntentId: paymentIntent.id
+          });
+          // Optionally redirect to thank you page
+          // window.location.href = `thankyou.html?product=${currentProduct}&amount=$${currentSolo}&type=Direct Order`;
+        } else {
+          // GROUP ORDER post-payment logic
+          const confirmGroupJoinSuccess = functions.httpsCallable('confirmGroupJoinSuccess');
+          await confirmGroupJoinSuccess({
+            groupOrderId: orderId,
+            userId: currentUserId
+          });
+          const checkAndCaptureGroupIfFull = functions.httpsCallable('checkAndCaptureGroupIfFull');
+          const captureResult = await checkAndCaptureGroupIfFull({
+            groupOrderId: orderId
+          });
+          alert(`Successfully joined group order! ${captureResult.data.message}`);
+          closeModal();
+        }
       } else {
-        throw new Error('Payment was not authorized');
+        throw new Error('Payment was not successful');
       }
 
     } catch (error) {
       console.error('Error:', error);
-      alert(`There was an error processing your group order: ${error.message}`);
+      alert(`There was an error processing your order: ${error.message}`);
       submitPayment.innerHTML = `<span>Confirm Payment</span>`;
       submitPayment.disabled = false;
     }
