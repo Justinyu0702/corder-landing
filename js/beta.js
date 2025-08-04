@@ -30,6 +30,213 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentClientSecret = null;
   let currentGroupOrderId = null;
   let currentUserId = null;
+  let progressUpdateInterval = null;
+
+  // Function to fetch real-time group order progress
+  async function fetchGroupOrderProgress(productId, productName) {
+    try {
+      const functions = firebase.app().functions('us-central1');
+      const getGroupOrderProgress = functions.httpsCallable('getGroupOrderProgress');
+      console.log('Fetching group order progress for product:', productName, 'with productId:', productId);
+      
+      const result = await getGroupOrderProgress({
+        productId: productId,
+        product_name: productName
+      });
+      console.log('Group order progress result:', result);
+      return result.data;
+    } catch (error) {
+      console.error('Error fetching group order progress:', error);
+      return {
+        currentCount: 0,
+        maxCount: null,
+        message: "Unable to fetch progress"
+      };
+    }
+  }
+
+  // Function to update progress display
+  function updateProgressDisplay(progressData) {
+    if (progressData.maxCount) {
+      modalProgress.textContent = `Current progress: ${progressData.currentCount} / ${progressData.maxCount}`;
+    } else {
+      modalProgress.textContent = progressData.message || "No active group order";
+    }
+  }
+
+  // Function to start periodic progress updates
+  function startProgressUpdates(productId, productName) {
+    // Clear any existing interval
+    if (progressUpdateInterval) {
+      clearInterval(progressUpdateInterval);
+    }
+    
+    // Initial fetch
+    fetchGroupOrderProgress(productId, productName).then(updateProgressDisplay);
+    
+    // Set up periodic updates every 10 seconds
+    progressUpdateInterval = setInterval(async () => {
+      const progressData = await fetchGroupOrderProgress(productId, productName);
+      updateProgressDisplay(progressData);
+    }, 10000); // Update every 10 seconds
+  }
+
+  // Function to stop progress updates
+  function stopProgressUpdates() {
+    if (progressUpdateInterval) {
+      clearInterval(progressUpdateInterval);
+      progressUpdateInterval = null;
+    }
+  }
+
+  // Function to show thank you modal
+  function showThankYouModal(orderType, orderData) {
+    const thankYouModal = document.getElementById('thankYouModal');
+    const thankYouLoading = document.getElementById('thankYouLoading');
+    const directOrderThankYou = document.getElementById('directOrderThankYou');
+    const groupOrderThankYou = document.getElementById('groupOrderThankYou');
+    
+    // Show loading state first
+    thankYouModal.style.display = 'flex';
+    thankYouLoading.style.display = 'block';
+    directOrderThankYou.style.display = 'none';
+    groupOrderThankYou.style.display = 'none';
+    
+    // Close the payment modal
+    closeModal();
+    
+    // Set arrival time (3 days from now)
+    const arrivalDate = new Date();
+    arrivalDate.setDate(arrivalDate.getDate() + 3);
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    const arrivalTime = arrivalDate.toLocaleDateString('en-US', options);
+    
+    // Simulate processing time
+    setTimeout(() => {
+      thankYouLoading.style.display = 'none';
+      
+      if (orderType === 'direct') {
+        // Show direct order layout
+        directOrderThankYou.style.display = 'block';
+        
+        // Populate direct order data
+        document.getElementById('modalDirectProduct').textContent = orderData.product;
+        document.getElementById('modalDirectAmount').textContent = `$${orderData.amount}`;
+        document.getElementById('modalDirectOrderNumber').textContent = orderData.orderNumber;
+        document.getElementById('modalDirectArrivalTime').textContent = arrivalTime;
+      } else {
+        // Show group order layout
+        groupOrderThankYou.style.display = 'block';
+        
+        // Populate group order data
+        document.getElementById('modalGroupProduct').textContent = orderData.product;
+        document.getElementById('modalGroupAmount').textContent = `$${orderData.amount}`;
+        document.getElementById('modalGroupProgress').textContent = `${orderData.currentProgress} / ${orderData.maxProgress}`;
+        document.getElementById('modalGroupArrivalTime').textContent = arrivalTime;
+        
+        // Calculate and set progress bar
+        const progressPercentage = (orderData.currentProgress / orderData.maxProgress) * 100;
+        document.getElementById('modalProgressFill').style.width = `${progressPercentage}%`;
+        
+        // Start real-time progress updates for group orders
+        if (orderData.productId) {
+          startModalProgressUpdates(orderData.productId, orderData.product);
+        }
+      }
+    }, 1500); // Show loading for 1.5 seconds
+  }
+
+  // Function to start progress updates for modal group orders
+  function startModalProgressUpdates(productId, productName) {
+    // Initial fetch
+    fetchGroupOrderProgress(productId, productName).then(updateModalGroupProgress);
+    
+    // Set up periodic updates every 10 seconds
+    const modalProgressInterval = setInterval(async () => {
+      const progressData = await fetchGroupOrderProgress(productId, productName);
+      updateModalGroupProgress(progressData);
+    }, 10000);
+    
+    // Store interval for cleanup
+    window.modalProgressInterval = modalProgressInterval;
+  }
+
+  // Function to update modal group progress
+  function updateModalGroupProgress(progressData) {
+    if (progressData.maxCount) {
+      const progressPercentage = (progressData.currentCount / progressData.maxCount) * 100;
+      document.getElementById('modalGroupProgress').textContent = `${progressData.currentCount} / ${progressData.maxCount}`;
+      document.getElementById('modalProgressFill').style.width = `${progressPercentage}%`;
+      
+      // Check if group is filled
+      if (progressData.currentCount >= progressData.maxCount) {
+        showModalGroupFilledNotification();
+      }
+    }
+  }
+
+  // Function to show modal group filled notification
+  function showModalGroupFilledNotification() {
+    const notification = document.getElementById('modalGroupFilledNotification');
+    const nextSteps = document.getElementById('modalGroupNextSteps');
+    
+    notification.style.display = 'block';
+    nextSteps.innerHTML = `
+      <p class="mil-mb-20"><strong>What happens next?</strong></p>
+      <ul style="text-align: left; color: #666;">
+        <li>Your group order has been filled!</li>
+        <li>We'll send pickup location details within 24 hours</li>
+        <li>You'll receive SMS and email confirmations</li>
+      </ul>
+    `;
+  }
+
+  // Function to close thank you modal
+  function closeThankYouModal() {
+    const thankYouModal = document.getElementById('thankYouModal');
+    thankYouModal.style.display = 'none';
+    
+    // Stop modal progress updates
+    if (window.modalProgressInterval) {
+      clearInterval(window.modalProgressInterval);
+      window.modalProgressInterval = null;
+    }
+  }
+
+  // Add event listeners for thank you modal
+  document.addEventListener('DOMContentLoaded', function() {
+    const thankYouModalClose = document.getElementById('thankYouModalClose');
+    const thankYouModal = document.getElementById('thankYouModal');
+    
+    if (thankYouModalClose) {
+      thankYouModalClose.addEventListener('click', closeThankYouModal);
+    }
+    
+    if (thankYouModal) {
+      thankYouModal.addEventListener('click', (e) => {
+        if (e.target === thankYouModal) {
+          closeThankYouModal();
+        }
+      });
+    }
+  });
+
+  // Test function for debugging
+  function testThankYouModal() {
+    console.log('Testing thank you modal...');
+    showThankYouModal('direct', {
+      product: 'Test Product',
+      amount: '2.99',
+      orderNumber: 'TEST-123'
+    });
+  }
 
   // Initialize Stripe
   function initializeStripe() {
@@ -64,13 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show modal with product info
   document.querySelectorAll('.mil-order-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
       e.stopPropagation();
       const product = btn.getAttribute('data-product');
       const solo = btn.getAttribute('data-solo');
       const group = btn.getAttribute('data-group');
-      const progress = btn.getAttribute('data-progress');
-      const goal = btn.getAttribute('data-goal');
       const save = (parseFloat(solo) - parseFloat(group)).toFixed(2);
       const productId = btn.getAttribute('data-product-id');
 
@@ -83,8 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Set modal button labels: label thin, price bold
       buySoloBtn.innerHTML = `<span style="font-weight:400;">Buy Solo</span><span style="font-weight:700;">$${solo}</span>`;
       joinGroupBtn.innerHTML = `<span style="font-weight:400;">Join Group</span><span style="font-weight:700;">$${group}</span>`;
-      modalProgress.textContent = `Current progress: ${progress} / ${goal}`;
       modalSave.textContent = save;
+
+      // Show loading state for progress
+      modalProgress.textContent = "Loading progress...";
 
       // Reset form
       paymentForm.style.display = 'none';
@@ -96,6 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       modalOverlay.classList.add('active');
       document.body.style.overflow = 'hidden';
+
+      // Fetch real-time progress and start updates
+      startProgressUpdates(productId, product);
     });
   });
 
@@ -109,6 +319,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide payment form
     paymentForm.style.display = 'none';
     document.body.style.overflow = '';
+    
+    // Stop progress updates when modal is closed
+    stopProgressUpdates();
   }
   modalClose.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', (e) => {
@@ -223,16 +436,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture') {
         if (mode === 'solo') {
-          alert('Payment successful! Thank you for your order.');
-          closeModal();
+          // Update order status
           const updateDirectOrderStatus = functions.httpsCallable('updateDirectOrderStatus');
           await updateDirectOrderStatus({
             orderId: orderId,
             status: 'captured',
             paymentIntentId: paymentIntent.id
           });
-          // Optionally redirect to thank you page
-          // window.location.href = `thankyou.html?product=${currentProduct}&amount=$${currentSolo}&type=Direct Order`;
+          
+          // Show thank you modal for direct order
+          showThankYouModal('direct', {
+            product: currentProduct,
+            amount: currentSolo,
+            orderNumber: orderId
+          });
         } else {
           // GROUP ORDER post-payment logic
           const confirmGroupJoinSuccess = functions.httpsCallable('confirmGroupJoinSuccess');
@@ -244,8 +461,18 @@ document.addEventListener('DOMContentLoaded', () => {
           const captureResult = await checkAndCaptureGroupIfFull({
             groupOrderId: orderId
           });
-          alert(`Successfully joined group order! ${captureResult.data.message}`);
-          closeModal();
+          
+          // Get current progress for modal
+          const progressData = await fetchGroupOrderProgress(currentProductId, currentProduct);
+          
+          // Show thank you modal for group order
+          showThankYouModal('group', {
+            product: currentProduct,
+            amount: currentGroup,
+            currentProgress: progressData.currentCount,
+            maxProgress: progressData.maxCount,
+            productId: currentProductId
+          });
         }
       } else {
         throw new Error('Payment was not successful');

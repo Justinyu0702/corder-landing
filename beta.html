@@ -65,7 +65,7 @@
       }
       /* Modal styles */
       .mil-modal-overlay {
-        display: none !important;
+        display: none;
         position: fixed !important;
         top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
         background: rgba(0,0,0,0.45) !important;
@@ -199,7 +199,93 @@
       }
       #groupOrderSection {
         display: block !important;
-      }
+              }
+        
+        /* Thank You Modal Styles */
+        #thankYouModal .mil-modal {
+            max-width: 500px !important;
+        }
+        
+        #thankYouModal .mil-success-icon {
+            width: 80px;
+            height: 80px;
+            background: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 40px;
+        }
+        
+        #thankYouModal .mil-order-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        #thankYouModal .mil-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        #thankYouModal .mil-detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        #thankYouModal .mil-detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        #thankYouModal .mil-detail-value {
+            color: #212529;
+        }
+        
+        #thankYouModal .mil-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        
+        #thankYouModal .mil-progress-fill {
+            height: 100%;
+            background: #e5cb67;
+            transition: width 0.3s ease;
+        }
+        
+        #thankYouModal .mil-arrival-time {
+            color: #e5cb67;
+            font-weight: 600;
+        }
+        
+        #thankYouModal .mil-group-filled {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        
+        #thankYouModal .mil-group-filled h5 {
+            color: #155724;
+            margin-bottom: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 
 </head>
@@ -248,6 +334,8 @@
             </div>
         </div>
         <!-- preloader end -->
+
+
 
         <!-- scrollbar progress -->
         <div class="mil-progress-track">
@@ -660,7 +748,7 @@
                                         <div class="mil-product-preview">
                                             <span class="mil-accent">Starting at $1.99</span>
                                         </div>
-                                        <button class="mil-order-btn mil-button" data-product="Broccoli" data-solo="1.99" data-group="1.49" data-progress="3" data-goal="5" data-product-id="broccoli"><span>Order</span></button>
+                                        <button class="mil-order-btn mil-button" data-product="Broccoli" data-solo="1.99" data-group="1.49" data-product-id="broccoli"><span>Order</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -672,7 +760,7 @@
                                         <div class="mil-product-preview">
                                             <span class="mil-accent">Starting at $2.49</span>
                                         </div>
-                                        <button class="mil-order-btn mil-button" data-product="Corn" data-solo="2.49" data-group="1.99" data-progress="2" data-goal="5" data-product-id="corn"><span>Order</span></button>
+                                        <button class="mil-order-btn mil-button" data-product="Corn" data-solo="2.49" data-group="1.99" data-product-id="corn"><span>Order</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -684,7 +772,7 @@
                                         <div class="mil-product-preview">
                                             <span class="mil-accent">Starting at $1.79</span>
                                         </div>
-                                        <button class="mil-order-btn mil-button" data-product="Celery" data-solo="1.79" data-group="1.29" data-progress="4" data-goal="5" data-product-id="celery"><span>Order</span></button>
+                                        <button class="mil-order-btn mil-button" data-product="Celery" data-solo="1.79" data-group="1.29" data-product-id="celery"><span>Order</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -698,7 +786,7 @@
                                         <div class="mil-product-preview">
                                             <span class="mil-accent">Starting at $2.99</span>
                                         </div>
-                                        <button class="mil-order-btn mil-button" data-product="Green Apple" data-solo="2.99" data-group="2.49" data-progress="1" data-goal="5" data-product-id="prod_Sh5ZhrYl1zlGGY"><span>Order</span></button>
+                                        <button class="mil-order-btn mil-button" data-product="Green Apple" data-solo="2.99" data-group="2.49" data-product-id="prod_Sh5ZhrYl1zlGGY"><span>Order</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -763,6 +851,7 @@
                               <button id="submitPayment" class="mil-button mil-arrow-place">Confirm Payment</button>
                             </div>
                             
+                            <!-- PROGRESS DISPLAY IS HERE -->
                             <div class="mil-progress" id="milModalProgress">Current progress: 0 / 0</div>
                             <div class="mil-save-line">Save $<span id="milModalSave">0</span> If group fills</div>
                           </div>
@@ -770,6 +859,142 @@
                     </div>
                 </section>
                 <!-- products end -->
+
+                <!-- Thank You Modal -->
+                <div class="mil-modal-overlay" id="thankYouModal" style="display: none;">
+                    <div class="mil-modal" style="max-width: 500px;">
+                        <button class="mil-modal-close" id="thankYouModalClose">&times;</button>
+                        
+                        <!-- Loading State -->
+                        <div id="thankYouLoading" style="text-align: center; padding: 40px;">
+                            <div class="mil-spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #e5cb67; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                            <h3>Processing your order...</h3>
+                        </div>
+
+                        <!-- Direct Order Layout -->
+                        <div id="directOrderThankYou" style="display: none;">
+                            <div class="mil-success-icon" style="width: 80px; height: 80px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; color: white; font-size: 40px;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            
+                            <h2 class="mil-mb-30">Thank You!</h2>
+                            <p class="mil-mb-30">Your direct order has been successfully processed!</p>
+                            
+                            <div class="mil-order-details" style="background: #f8f9fa; border-radius: 12px; padding: 24px; margin: 30px 0; text-align: left;">
+                                <h5 class="mil-mb-20">Order Details</h5>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Product:</span>
+                                    <span class="mil-detail-value" id="modalDirectProduct" style="color: #212529;">Green Apples</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Amount Paid:</span>
+                                    <span class="mil-detail-value" id="modalDirectAmount" style="color: #212529;">$2.99</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Order Type:</span>
+                                    <span class="mil-detail-value" style="color: #212529;">Direct Order</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Order Number:</span>
+                                    <span class="mil-detail-value" id="modalDirectOrderNumber" style="color: #212529;">ORD-12345</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Estimated Arrival:</span>
+                                    <span class="mil-detail-value mil-arrival-time" id="modalDirectArrivalTime" style="color: #e5cb67; font-weight: 600;">Thursday, Dec 19th - 2:00 PM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mil-mb-30">
+                                <p class="mil-mb-20"><strong>What happens next?</strong></p>
+                                <ul style="text-align: left; color: #666;">
+                                    <li>We've sent confirmation emails and SMS messages</li>
+                                    <li>Pickup location details will be sent 24 hours before arrival</li>
+                                    <li>You'll receive real-time updates on your order status</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Group Order Layout -->
+                        <div id="groupOrderThankYou" style="display: none;">
+                            <div class="mil-success-icon" style="width: 80px; height: 80px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; color: white; font-size: 40px;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            
+                            <h2 class="mil-mb-30">Thank You!</h2>
+                            <p class="mil-mb-30">Your payment has been successfully processed. You're now part of our community group order!</p>
+                            
+                            <!-- Group Filled Notification -->
+                            <div class="mil-group-filled" id="modalGroupFilledNotification" style="display: none; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 16px; margin: 20px 0; color: #155724;">
+                                <h5 style="color: #155724; margin-bottom: 8px;"><i class="fas fa-star"></i> Group Order Filled!</h5>
+                                <p>Congratulations! Your group order has been filled and is now being processed. You'll receive pickup details shortly.</p>
+                            </div>
+                            
+                            <div class="mil-order-details" style="background: #f8f9fa; border-radius: 12px; padding: 24px; margin: 30px 0; text-align: left;">
+                                <h5 class="mil-mb-20">Order Details</h5>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Product:</span>
+                                    <span class="mil-detail-value" id="modalGroupProduct" style="color: #212529;">Green Apples</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Amount Paid:</span>
+                                    <span class="mil-detail-value" id="modalGroupAmount" style="color: #212529;">$2.49</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Order Type:</span>
+                                    <span class="mil-detail-value" style="color: #212529;">Group Order</span>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Group Progress:</span>
+                                    <span class="mil-detail-value" id="modalGroupProgress" style="color: #212529;">3 / 5</span>
+                                </div>
+                                
+                                <div class="mil-progress-bar" style="width: 100%; height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; margin: 8px 0;">
+                                    <div class="mil-progress-fill" id="modalProgressFill" style="height: 100%; background: #e5cb67; transition: width 0.3s ease; width: 60%"></div>
+                                </div>
+                                
+                                <div class="mil-detail-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                                    <span class="mil-detail-label" style="font-weight: 600; color: #495057;">Estimated Arrival:</span>
+                                    <span class="mil-detail-value mil-arrival-time" id="modalGroupArrivalTime" style="color: #e5cb67; font-weight: 600;">Thursday, Dec 19th - 2:00 PM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mil-mb-30" id="modalGroupNextSteps">
+                                <p class="mil-mb-20"><strong>What happens next?</strong></p>
+                                <ul style="text-align: left; color: #666;">
+                                    <li>We'll notify you via email when the group fills</li>
+                                    <li>If the group doesn't fill, you'll get a refund</li>
+                                    <li>Pickup location details will be sent 24 hours before arrival</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mil-btn-row">
+                            <a href="beta.html" class="mil-button mil-arrow-place mil-mb-20" onclick="closeThankYouModal()">
+                                <span>Order More</span>
+                            </a>
+                            <a href="index.html" class="mil-button mil-arrow-place mil-accent-bg" onclick="closeThankYouModal()">
+                                <span>Back to Home</span>
+                            </a>
+                        </div>
+                        
+                        <!-- Test button for debugging -->
+                        <!-- <div style="margin-top: 20px; text-align: center;">
+                            <button onclick="testThankYouModal()" style="background: #e5cb67; color: #292929; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
+                                Test Thank You Modal
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- Thank You Modal end -->
 
                 <!-- call to action -->
                 <section class="mil-dark-bg">

@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="css/plugins/fancybox.min.css">
     <!-- corder scss -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-functions-compat.js"></script>
     <!-- page name -->
     <title>Thank You | Corder</title>
     <style>
@@ -81,6 +85,25 @@
             color: #e5cb67;
             font-weight: 600;
         }
+        .mil-group-filled {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        .mil-group-filled h5 {
+            color: #155724;
+            margin-bottom: 8px;
+        }
+        .mil-direct-order {
+            display: none;
+        }
+        .mil-group-order {
+            display: none;
+        }
+
     </style>
 </head>
 
@@ -225,7 +248,67 @@
                     <div class="container mil-p-120-90">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
-                                <div class="mil-thankyou-card">
+
+
+                                <!-- Direct Order Layout -->
+                                <div class="mil-thankyou-card mil-direct-order" id="directOrderLayout">
+                                    <div class="mil-success-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    
+                                    <h2 class="mil-mb-30">Thank You!</h2>
+                                    <p class="mil-mb-30">Your direct order has been successfully processed!</p>
+                                    
+                                    <div class="mil-order-details">
+                                        <h5 class="mil-mb-20">Order Details</h5>
+                                        
+                                        <div class="mil-detail-row">
+                                            <span class="mil-detail-label">Product:</span>
+                                            <span class="mil-detail-value" id="directProduct">Green Apples</span>
+                                        </div>
+                                        
+                                        <div class="mil-detail-row">
+                                            <span class="mil-detail-label">Amount Paid:</span>
+                                            <span class="mil-detail-value" id="directAmount">$2.99</span>
+                                        </div>
+                                        
+                                        <div class="mil-detail-row">
+                                            <span class="mil-detail-label">Order Type:</span>
+                                            <span class="mil-detail-value">Direct Order</span>
+                                        </div>
+                                        
+                                        <div class="mil-detail-row">
+                                            <span class="mil-detail-label">Order Number:</span>
+                                            <span class="mil-detail-value" id="directOrderNumber">ORD-12345</span>
+                                        </div>
+                                        
+                                        <div class="mil-detail-row">
+                                            <span class="mil-detail-label">Estimated Arrival:</span>
+                                            <span class="mil-detail-value mil-arrival-time" id="directArrivalTime">Thursday, Dec 19th - 2:00 PM</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mil-mb-30">
+                                        <p class="mil-mb-20"><strong>What happens next?</strong></p>
+                                        <ul style="text-align: left; color: #666;">
+                                            <li>We've sent confirmation emails and SMS messages</li>
+                                            <li>Pickup location details will be sent 24 hours before arrival</li>
+                                            <li>You'll receive real-time updates on your order status</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mil-btn-row">
+                                        <a href="beta.html" class="mil-button mil-arrow-place mil-mb-20">
+                                            <span>Order More</span>
+                                        </a>
+                                        <a href="index.html" class="mil-button mil-arrow-place mil-accent-bg">
+                                            <span>Back to Home</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Group Order Layout -->
+                                <div class="mil-thankyou-card mil-group-order" id="groupOrderLayout">
                                     <div class="mil-success-icon">
                                         <i class="fas fa-check"></i>
                                     </div>
@@ -233,22 +316,28 @@
                                     <h2 class="mil-mb-30">Thank You!</h2>
                                     <p class="mil-mb-30">Your payment has been successfully processed. You're now part of our community group order!</p>
                                     
+                                    <!-- Group Filled Notification -->
+                                    <div class="mil-group-filled" id="groupFilledNotification" style="display: none;">
+                                        <h5><i class="fas fa-star"></i> Group Order Filled!</h5>
+                                        <p>Congratulations! Your group order has been filled and is now being processed. You'll receive pickup details shortly.</p>
+                                    </div>
+                                    
                                     <div class="mil-order-details">
                                         <h5 class="mil-mb-20">Order Details</h5>
                                         
                                         <div class="mil-detail-row">
                                             <span class="mil-detail-label">Product:</span>
-                                            <span class="mil-detail-value" id="orderProduct">Green Apples</span>
+                                            <span class="mil-detail-value" id="groupProduct">Green Apples</span>
                                         </div>
                                         
                                         <div class="mil-detail-row">
                                             <span class="mil-detail-label">Amount Paid:</span>
-                                            <span class="mil-detail-value" id="orderAmount">$2.49</span>
+                                            <span class="mil-detail-value" id="groupAmount">$2.49</span>
                                         </div>
                                         
                                         <div class="mil-detail-row">
                                             <span class="mil-detail-label">Order Type:</span>
-                                            <span class="mil-detail-value" id="orderType">Group Order</span>
+                                            <span class="mil-detail-value">Group Order</span>
                                         </div>
                                         
                                         <div class="mil-detail-row">
@@ -262,11 +351,11 @@
                                         
                                         <div class="mil-detail-row">
                                             <span class="mil-detail-label">Estimated Arrival:</span>
-                                            <span class="mil-detail-value mil-arrival-time" id="arrivalTime">Thursday, Dec 19th - 2:00 PM</span>
+                                            <span class="mil-detail-value mil-arrival-time" id="groupArrivalTime">Thursday, Dec 19th - 2:00 PM</span>
                                         </div>
                                     </div>
                                     
-                                    <div class="mil-mb-30">
+                                    <div class="mil-mb-30" id="groupNextSteps">
                                         <p class="mil-mb-20"><strong>What happens next?</strong></p>
                                         <ul style="text-align: left; color: #666;">
                                             <li>We'll notify you via email when the group fills</li>
@@ -492,7 +581,116 @@
     <script src="js/main.js"></script>
 
     <script>
-        // Get URL parameters to populate order details
+        // Global variables
+        let currentOrderType = null;
+        let currentProductId = null;
+        let currentGroupOrderId = null;
+        let progressUpdateInterval = null;
+
+        // Function to fetch group order progress
+        async function fetchGroupOrderProgress(productId, productName) {
+            try {
+                const functions = firebase.app().functions('us-central1');
+                const getGroupOrderProgress = functions.httpsCallable('getGroupOrderProgress');
+                
+                const result = await getGroupOrderProgress({
+                    productId: productId,
+                    product_name: productName
+                });
+                
+                return result.data;
+            } catch (error) {
+                console.error('Error fetching group order progress:', error);
+                return {
+                    currentCount: 0,
+                    maxCount: null,
+                    message: "Unable to fetch progress"
+                };
+            }
+        }
+
+        // Function to update group order progress
+        function updateGroupProgress(progressData) {
+            if (progressData.maxCount) {
+                const progressPercentage = (progressData.currentCount / progressData.maxCount) * 100;
+                document.getElementById('groupProgress').textContent = `${progressData.currentCount} / ${progressData.maxCount}`;
+                document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+                
+                // Check if group is filled
+                if (progressData.currentCount >= progressData.maxCount) {
+                    showGroupFilledNotification();
+                }
+            }
+        }
+
+        // Function to show group filled notification
+        function showGroupFilledNotification() {
+            const notification = document.getElementById('groupFilledNotification');
+            const nextSteps = document.getElementById('groupNextSteps');
+            
+            notification.style.display = 'block';
+            nextSteps.innerHTML = `
+                <p class="mil-mb-20"><strong>What happens next?</strong></p>
+                <ul style="text-align: left; color: #666;">
+                    <li>Your group order has been filled!</li>
+                    <li>We'll send pickup location details within 24 hours</li>
+                    <li>You'll receive SMS and email confirmations</li>
+                </ul>
+            `;
+        }
+
+        // Function to start progress updates for group orders
+        function startProgressUpdates(productId, productName) {
+            // Initial fetch
+            fetchGroupOrderProgress(productId, productName).then(updateGroupProgress);
+            
+            // Set up periodic updates every 10 seconds
+            progressUpdateInterval = setInterval(async () => {
+                const progressData = await fetchGroupOrderProgress(productId, productName);
+                updateGroupProgress(progressData);
+            }, 10000);
+        }
+
+        // Function to stop progress updates
+        function stopProgressUpdates() {
+            if (progressUpdateInterval) {
+                clearInterval(progressUpdateInterval);
+                progressUpdateInterval = null;
+            }
+        }
+
+        // Function to show direct order layout
+        function showDirectOrderLayout(orderData) {
+            document.getElementById('directOrderLayout').style.display = 'block';
+            
+            // Populate direct order data
+            document.getElementById('directProduct').textContent = orderData.product;
+            document.getElementById('directAmount').textContent = orderData.amount;
+            document.getElementById('directOrderNumber').textContent = orderData.orderNumber || 'ORD-' + Date.now();
+            document.getElementById('directArrivalTime').textContent = orderData.arrivalTime;
+        }
+
+        // Function to show group order layout
+        function showGroupOrderLayout(orderData) {
+            document.getElementById('groupOrderLayout').style.display = 'block';
+            
+            // Populate group order data
+            document.getElementById('groupProduct').textContent = orderData.product;
+            document.getElementById('groupAmount').textContent = orderData.amount;
+            document.getElementById('groupProgress').textContent = `${orderData.currentProgress} / ${orderData.maxProgress}`;
+            document.getElementById('groupArrivalTime').textContent = orderData.arrivalTime;
+            
+            // Calculate and set progress bar
+            const progressPercentage = (orderData.currentProgress / orderData.maxProgress) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+            
+            // Start real-time progress updates
+            if (orderData.productId) {
+                startProgressUpdates(orderData.productId, orderData.product);
+            }
+        }
+
+        // Main initialization
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -500,22 +698,14 @@
             const product = urlParams.get('product') || 'Green Apples';
             const amount = urlParams.get('amount') || '$2.49';
             const orderType = urlParams.get('type') || 'Group Order';
-            const currentProgress = urlParams.get('progress') || '3';
-            const maxProgress = urlParams.get('max') || '5';
+            const currentProgress = parseInt(urlParams.get('progress')) || 3;
+            const maxProgress = parseInt(urlParams.get('max')) || 5;
+            const productId = urlParams.get('productId');
+            const orderNumber = urlParams.get('orderNumber');
             
-            // Calculate progress percentage
-            const progressPercentage = (parseInt(currentProgress) / parseInt(maxProgress)) * 100;
-            
-            // Update the page content
-            document.getElementById('orderProduct').textContent = product;
-            document.getElementById('orderAmount').textContent = amount;
-            document.getElementById('orderType').textContent = orderType;
-            document.getElementById('groupProgress').textContent = `${currentProgress} / ${maxProgress}`;
-            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
-            
-            // Set arrival time (placeholder for now)
+            // Set arrival time (3 days from now)
             const arrivalDate = new Date();
-            arrivalDate.setDate(arrivalDate.getDate() + 3); // 3 days from now
+            arrivalDate.setDate(arrivalDate.getDate() + 3);
             const options = { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -525,7 +715,27 @@
                 minute: '2-digit'
             };
             const arrivalTime = arrivalDate.toLocaleDateString('en-US', options);
-            document.getElementById('arrivalTime').textContent = arrivalTime;
+            
+            // Prepare order data
+            const orderData = {
+                product: product,
+                amount: amount,
+                arrivalTime: arrivalTime,
+                currentProgress: currentProgress,
+                maxProgress: maxProgress,
+                productId: productId,
+                orderNumber: orderNumber
+            };
+            
+            // Show appropriate layout based on order type
+            if (orderType === 'Direct Order') {
+                showDirectOrderLayout(orderData);
+            } else {
+                showGroupOrderLayout(orderData);
+            }
+            
+            // Clean up when page is unloaded
+            window.addEventListener('beforeunload', stopProgressUpdates);
         });
     </script>
 
